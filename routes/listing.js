@@ -6,12 +6,18 @@ const ExpressError = require("../utils/ExpressError.js");
 const {isLoggedin,isOwner,validateListing} = require("../middleware.js");
 const listingController = require("../controllers/listing.js");
 
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
 
 router.route("/")
     //INDEX ROUTE
 .get(wrapAsync(listingController.index))
     //CREATE ROUTE
-.post(isLoggedin,validateListing,wrapAsync(listingController.createListing));
+// .post(isLoggedin,validateListing,wrapAsync(listingController.createListing));
+.post(upload.single('listing[image]'),(req,res)=>{
+    res.send(req.file);
+});
 
 //NEW ROUTE
 router.get("/new",isLoggedin,listingController.renderNewForm);
