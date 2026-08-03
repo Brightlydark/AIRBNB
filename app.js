@@ -1,10 +1,13 @@
+if(process.env.NODE_ENV!= "production"){
+    require("dotenv").config();
+}
 const express = require("express");
 const app=express();
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-
+const ExpressError = require("./utils/ExpressError");
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -85,6 +88,7 @@ app.all(/.*/, (req, res, next) => {
   next(new ExpressError(404, "Page not found!"));
 });
 app.use((err,req,res,next)=>{
+    console.log(err);
     let{statusCode=500,message="Some error occurred"}=err;
     res.status(statusCode).render("listings/error.ejs",{err});
 })
